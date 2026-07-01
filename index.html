@@ -171,6 +171,7 @@ html,body{
   display:flex;
   flex-direction:column;
   padding: 20px 20px 0px;
+  justify-content: center;
 }
 .s-card-c{
   background:var(--white);
@@ -388,7 +389,7 @@ hr.rule{
 .sbox.ng .ssign{color:var(--red)}
 .slabel{
   font-family:var(--geo);
-  font-size:11px;
+  font-size:11px;f
   color:var(--gray-txt);
   display:block;
   margin-top:8px;
@@ -398,7 +399,7 @@ hr.rule{
 /* ─── SLIDE 5: STEAL ─── */
 .steal-body{
   font-family:var(--geo);
-  font-size:13.5px;
+  font-size:1.3rem;
   color:rgba(255,255,255,0.55);
   line-height:1.75;
   margin-bottom:22px;
@@ -562,15 +563,11 @@ hr.rule{
   transform:translateY(0);
 }
 
-.largef{
-    font-size: 30px;
-}
-.Mediumf{
-    font-size: 25px;
-}
-.Smallf{
-    font-size: 20px;
-}
+.largef  { font-size: 1.35rem; }
+.Mediumf { font-size: 0.90rem; }
+.Smallf  { font-size: 1rem; }
+
+
 
 </style>
 </head>
@@ -692,7 +689,7 @@ hr.rule{
       <div class="c-eyebrow">The Steal Rule</div>
       <div class="c-title">მოპარვის&nbsp;წესი</div>
       <hr class="rule">
-      <p class="steal-body Mediumf">კითხვებს გუნდები ირჩევენ რიგრიგობით.
+      <p class="steal-body">კითხვებს გუნდები ირჩევენ რიგრიგობით.
 არასწორი პასუხის შემთხვევაში, მეტოქეს ეძლევა საშუალება <strong style="color:rgba(255,255,255,0.85)">მოიპაროს</strong> ქულა და მოიპოვოს უპირატოსობა.</p>
       <div class="steal-warn">
         <div class="steal-warn-ttl largef">⚠️ ყურადღება!</div>
@@ -719,30 +716,33 @@ hr.rule{
           </div>
           <div class="partner-badge main" style="text-decoration: none;">პარტნიორი</div>
         </div>
+        <a href="https://www.tiktok.com/@rubikoni_games">
+        <div class="partner-card">
+          <div class="partner-logo"><img src="https://sf-static.tiktokcdn.com/obj/eden-sg/uhtyvueh7nulogpoguhm/tiktok-icon2.png" alt="TikTok" style="height: 100%; width: 100%; object-fit: cover;"></div>
+          <div class="partner-info">
+            <div class="partner-name">TikTok</div>
+            <div class="partner-desc">@rubikoni_games</div>
+          </div>
+          <div class="partner-badge" style="text-decoration: none;">მედია</div>
+        </div>
         </a>
+        <a href="https://www.instagram.com/rubikoni_games/">
         <div class="partner-card">
-          <div class="partner-logo yellow-bg">EDU</div>
+          <div class="partner-logo"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQwhZh15H7cVVXmWU2wPntVH9zF6mOlgjQBA1yNaHWXig&s" alt="Instagram" style="height: 100%; width: 100%; object-fit: cover;"></div>
           <div class="partner-info">
-            <div class="partner-name">პარტნიორი 2</div>
-            <div class="partner-desc">საგანმანათლებლო პარტნიორი</div>
+            <div class="partner-name">Instagram</div>
+            <div class="partner-desc">@rubikoni_games</div>
           </div>
-          <div class="partner-badge">პარტნიორი</div>
+          <div class="partner-badge" style="text-decoration: none;">მედია</div>
         </div>
-        <div class="partner-card">
-          <div class="partner-logo red-bg">MED</div>
-          <div class="partner-info">
-            <div class="partner-name">პარტნიორი 3</div>
-            <div class="partner-desc">მედია პარტნიორი · პრომო</div>
-          </div>
-          <div class="partner-badge">მედია</div>
-        </div>
-        <div class="partner-card" style="border-style:dashed;opacity:0.5">
+        </a>
+        <!-- <div class="partner-card" style="border-style:dashed;opacity:0.5">
           <div class="partner-logo" style="background:var(--gray);color:var(--gray-txt)">+</div>
           <div class="partner-info">
             <div class="partner-name">გახდი პარტნიორი</div>
             <div class="partner-desc">დაგვიკავშირდი თანამშრომლობისთვის</div>
           </div>
-        </div>
+        </div> -->
       </div>
     </div>
   </section>
@@ -750,9 +750,9 @@ hr.rule{
   <!-- SLIDE 7: FOOTER -->
   <section class="slide s-footer" data-index="6">
     <div class="slide-content">
-      <div class="footer-logo">რუბიკონი</div>
-      <div class="footer-msg">მოემზადეთ,<br><span>თამაში იწყება!</span></div>
-      <div class="footer-sub">Festival Intellectual Game · 2025</div>
+      <div class="footer-logo" style="color:var(--white)">რუბიკონი</div>
+      <div class="footer-msg">მოემზადეთ,<br><span>თამაში მალე დაიწყება!</span></div>
+      <div class="footer-sub" style="color: var(--gray-mid);">ყველა საავტორო უფლება დაცულია · 2026</div>
       <button class="restart-btn" onclick="goTo(0)">↑ თავიდან</button>
     </div>
   </section>
