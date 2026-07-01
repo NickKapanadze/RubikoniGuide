@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="ka">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>რუბიკონი — როგორ ვითამაშო?</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Georgian:wght@400;700;900&family=Space+Grotesk:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+/* ─── RESET ─── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+/* ─── TOKENS ─── */
+:root{
+  --black:#0A0A0A;
+  --white:#FDFEFE;
+  --yellow:#FDCA47;
+  --red:#ED2F3B;
+  --yellow-dk:#B07A00;
+  --red-dk:#A81E28;
+  --gray:#E8E4DA;
+  --gray-mid:#C5BFB0;
+  --gray-txt:#5A5548;
+  --geo:'Noto Sans Georgian',sans-serif;
+  --grotesk:'Space Grotesk',sans-serif;
+}
+
+/* ─── SLIDE ENGINE ─── */
+html,body{
+  width:100%;height:100%;
+  overflow:hidden;
+  background:var(--black);
+}
+
+.slider{
+  width:100%;height:100%;
+  display:flex;
+  flex-direction:column;
+  transition:transform 0.72s cubic-bezier(0.77,0,0.18,1);
+  will-change:transform;
+}
+
+.slide{
+  width:100%;
+  min-height:100dvh;
+  flex-shrink:0;
+  overflow-y:auto;
+  overflow-x:hidden;
+  position:relative;
+  -webkit-overflow-scrolling:touch;
+}
+
+/* prevent inner scroll from triggering slide change */
+.slide.active{overflow-y:auto}
+.slide:not(.active){overflow-y:hidden;pointer-events:none}
+
+/* ─── DOT NAV ─── */
+.dots{
+  position:fixed;
+  right:14px;
+  top:50%;
+  transform:translateY(-50%);
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  z-index:999;
+}
+.dot{
+  width:7px;height:7px;
+  border-radius:50%;
+  background:rgba(0, 0, 0, 0.25);
+  cursor:pointer;
+  transition:background 0.3s,transform 0.3s;
+  border:none;
+  padding:0;
+}
+.dot.on{
+  background:var(--yellow);
+  transform:scale(1.4);
+}
+
+/* ─── SLIDE 1: HERO ─── */
+.s-hero{
+  background:var(--white);
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  padding:52px 28px 60px;
+  min-height:100dvh;
+    text-align: center;
+}
+.hero-badge{
+  display:inline-block;
+  border:1.5px solid rgba(79, 79, 79, 0.22);
+  color:rgba(0, 0, 0, 0.55);
+  font-size:9px;font-weight:700;
+  letter-spacing:0.14em;
+  text-transform:uppercase;
+  padding:6px 14px;
+  border-radius:4px;
+  margin-bottom:36px;
+  font-family:var(--grotesk);
+  width:fit-content;
+}
+.hero-logo{
+  font-family:var(--geo);
+  font-weight:900;
+  font-size:clamp(56px,18vw,80px);
+  line-height:0.88;
+  letter-spacing:-3px;
+  color:var(--black);
+  margin-bottom:4px;
+}
+.hero-logo img{width: 100%;}
+.hero-slogan{
+  font-family:var(--geo);
+  font-weight:900;
+  font-size:clamp(26px,8vw,34px);
+  line-height:1.1;
+  color:var(--black);
+  margin-bottom:10px;
+  letter-spacing:-0.5px;
+  text-align: center;
+}
+.hero-slogan .rdot{color:var(--red)}
+.hero-sub{
+  font-family:var(--geo);
+  font-size:13px;
+  color:rgba(0, 0, 0, 0.45);
+  line-height:1.7;
+  margin-bottom:44px;
+  max-width:300px;
+  
+  text-align: center;
+}
+.cta{
+  display:inline-block;
+  background:var(--yellow);
+  color:var(--black);
+  font-family:var(--geo);
+  font-weight:700;
+  font-size:15px;
+  padding:15px 30px;
+  border-radius:12px;
+  border:none;cursor:pointer;
+  letter-spacing:-0.2px;
+  width:fit-content;
+  transition:transform 0.14s;
+  user-select:none;
+}
+.cta:active{transform:scale(0.96)}
+
+/* swipe hint */
+.swipe-hint{
+  position:absolute;
+  bottom:28px;left:0;right:0;
+  text-align:center;
+  font-family:var(--grotesk);
+  font-size:11px;
+  color:rgba(255,255,255,0.22);
+  letter-spacing:0.08em;
+  animation:blink 2.4s ease-in-out infinite;
+}
+@keyframes blink{0%,100%{opacity:0.3}50%{opacity:1}}
+
+/* ─── SLIDE CARD WRAPPER (slides 2-5) ─── */
+.s-card{
+  background:var(--white);
+  min-height:100dvh;
+  display:flex;
+  flex-direction:column;
+  padding: 20px 20px 0px;
+}
+.s-card-c{
+  background:var(--white);
+  min-height:100dvh;
+  display:flex;
+  flex-direction:column;
+  justify-content: center   ;
+  padding:36px 20px 48px;
+}
+.s-dark{
+  background:var(--black);
+  color:var(--white);
+}
+
+/* ─── CARD HEADER ─── */
+.c-eyebrow{
+  font-family:var(--grotesk);
+  font-size:9px;
+  font-weight:700;
+  letter-spacing:0.16em;
+  text-transform:uppercase;
+  color:var(--gray-txt);
+  margin-bottom:8px;
+}
+.s-dark .c-eyebrow{color:rgba(255,255,255,0.35)}
+.c-num{
+  font-family:var(--grotesk);
+  font-weight:800;
+  font-size:11px;
+  color:var(--gray-mid);
+  float:right;
+  margin-top:2px;
+}
+.s-dark .c-num{color:rgba(255,255,255,0.2)}
+.c-title{
+  font-family:var(--geo);
+  font-weight:900;
+  font-size:clamp(22px,6vw,28px);
+  line-height:1.15;
+  color:var(--black);
+  margin-bottom:10px;
+  letter-spacing:-0.5px;
+}
+.s-dark .c-title{color:var(--white)}
+.c-body{
+  font-family:var(--geo);
+  font-size:13px;
+  color:var(--gray-txt);
+  line-height:1.75;
+}
+.s-dark .c-body{color:rgba(255,255,255,0.5)}
+hr.rule{
+  border:none;
+  border-top:1.5px solid var(--gray);
+  margin:16px 0;
+}
+.s-dark hr.rule{border-color:rgba(255,255,255,0.1)}
+
+
+
+.board{
+  display:flex;
+  gap:5px;
+  margin:16px 0 14px;
+}
+
+.col{
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  gap:5px;
+  min-width:0;
+  transition:
+    flex 1.5s ease,
+    opacity .5s ease,
+    transform .5s ease;
+}
+
+.col.fading{
+  opacity:.3;
+  transform:scale(.95);
+}
+
+.col.gone{
+  flex:0;
+  opacity:0;
+  transform:scaleX(0);
+  overflow:hidden;
+  pointer-events:none;
+}
+
+/* ─── SLIDE 2: FORMAT ─── */
+.format-badges{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  margin:18px 0 14px;
+}
+.fbadge{
+  background:var(--black);
+  border-radius:12px;
+  padding:18px 12px;
+  text-align:center;
+}
+.fbadge-n{
+  font-family:var(--grotesk);
+  font-weight:800;
+  font-size:32px;
+  line-height:1;
+  display:block;
+}
+.fbadge-n.y{color:var(--yellow)}
+.fbadge-n.r{color:var(--red)}
+.fbadge-l{
+  font-family:var(--geo);
+  font-size:11px;
+  color:rgba(255,255,255,0.5);
+  display:block;
+  margin-top:5px;
+}
+.del-note{
+  background:var(--gray);
+  border-radius:10px;
+  padding:12px 14px;
+  font-family:var(--geo);
+  font-size:12px;
+  color:var(--gray-txt);
+  display:flex;align-items:center;gap:10px;
+  line-height:1.55;
+}
+.del-note .ico{font-size:20px;flex-shrink:0}
+
+/* ─── SLIDE 3: BOARD ─── */
+
+
+.bhead{
+  background:var(--black);
+  color:var(--white);
+  font-family:var(--geo);
+  font-weight:700;
+  font-size:9px;
+  text-align:center;
+  padding:9px 0px;
+  border-radius:7px;
+  line-height:1.35;
+  overflow-x: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  transition: opacity 0.4s ease, transform 0.4s ease,
+              background 0.6s ease, color 0.6s ease;
+
+}
+.bcell{
+  background:var(--gray);
+  text-align:center;
+  padding:9px 4px;
+  border-radius:7px;
+  font-family:var(--grotesk);
+  font-weight:700;
+  font-size:15px;
+  color:var(--yellow-dk);
+}
+.bcell.max{
+  background:var(--red);
+  color:var(--white);
+}
+.time-table{
+  background:var(--gray);
+  border-radius:10px;
+  padding:12px 14px;
+  display:flex;
+  flex-direction:column;
+  gap:7px;
+}
+.trow{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  font-size:12px;
+}
+.trow .tp{
+  font-family:var(--grotesk);
+  font-weight:700;
+  color:var(--black);
+}
+.trow .ts{
+  font-family:var(--geo);
+  color:var(--gray-txt);
+}
+.trow.xr .tp{color:var(--red-dk)}
+
+/* ─── SLIDE 4: SCORING ─── */
+.score-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+  margin:20px 0 0;
+}
+.sbox{
+  border-radius:14px;
+  padding:20px 14px;
+  text-align:center;
+  border:2px solid transparent;
+}
+.sbox.ok{background:#FFF7E0;border-color:var(--yellow)}
+.sbox.ng{background:#FEF0F0;border-color:var(--red)}
+.ssign{
+  font-family:var(--grotesk);
+  font-weight:800;
+  font-size:38px;
+  line-height:1;
+  display:block;
+}
+.sbox.ok .ssign{color:var(--yellow-dk)}
+.sbox.ng .ssign{color:var(--red)}
+.slabel{
+  font-family:var(--geo);
+  font-size:11px;
+  color:var(--gray-txt);
+  display:block;
+  margin-top:8px;
+  line-height:1.5;
+}
+
+/* ─── SLIDE 5: STEAL ─── */
+.steal-body{
+  font-family:var(--geo);
+  font-size:13.5px;
+  color:rgba(255,255,255,0.55);
+  line-height:1.75;
+  margin-bottom:22px;
+}
+.steal-warn{
+  border-left:4px solid var(--red);
+  background:rgba(237,47,59,0.12);
+  border-radius:0 12px 12px 0;
+  padding:16px 18px;
+  margin-top:4px;
+}
+.steal-warn-ttl{
+  font-family:var(--geo);
+  font-weight:700;
+  font-size:13px;
+  color:var(--red);
+  margin-bottom:7px;
+  display:flex;align-items:center;gap:7px;
+}
+.steal-warn-b{
+  font-family:var(--geo);
+  font-size:12.5px;
+  color:rgba(255,255,255,0.5);
+  line-height:1.65;
+}
+
+/* ─── SLIDE 6: PARTNERS ─── */
+.s-partners{
+  background:var(--white);
+  min-height:100dvh;
+  display:flex;
+  flex-direction:column;
+  padding:36px 20px 60px;
+}
+.partners-intro{
+  font-family:var(--geo);
+  font-size:13px;
+  color:var(--gray-txt);
+  line-height:1.7;
+  margin-bottom:24px;
+}
+.partner-grid{
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+  flex:1;
+}
+.partner-card{
+  border:1.5px solid var(--black);
+  border-radius:14px;
+  padding:18px 18px;
+  display:flex;
+  align-items:center;
+  gap:16px;
+  background:var(--white);
+  transition:background 0.15s;
+}
+.partner-logo{
+  width:52px;height:52px;
+  border-radius:10px;
+  background:var(--black);
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--grotesk);
+  font-weight:800;
+  font-size:13px;
+  color:var(--yellow);
+  flex-shrink:0;
+  letter-spacing:-0.5px;
+}
+.partner-logo.red-bg{background:var(--red);color:var(--white)}
+.partner-logo.yellow-bg{background:var(--yellow);color:var(--black)}
+.partner-info{flex:1}
+.partner-name{
+  font-family:var(--geo);
+  font-weight:700;
+  font-size:15px;
+  color:var(--black);
+  margin-bottom:3px;
+}
+.partner-desc{
+  font-family:var(--geo);
+  font-size:11.5px;
+  color:var(--gray-txt);
+  line-height:1.5;
+}
+.partner-badge{
+  font-family:var(--grotesk);
+  font-size:9px;
+  font-weight:700;
+  letter-spacing:0.1em;
+  text-transform:uppercase;
+  padding:4px 9px;
+  border-radius:4px;
+  background:var(--yellow);
+  color:var(--black);
+  white-space:nowrap;
+  align-self:flex-start;
+}
+.partner-badge.main{background:var(--red);color:var(--white)}
+
+/* ─── SLIDE 7: FOOTER ─── */
+.s-footer{
+  background:var(--black);
+  min-height:100dvh;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  padding:40px 28px;
+  text-align:center;
+}
+.footer-logo{
+  font-family:var(--geo);
+  font-weight:900;
+  font-size:52px;
+  line-height:0.9;
+  letter-spacing:-2px;
+  color:rgba(255,255,255,0.08);
+  margin-bottom:24px;
+}
+.footer-msg{
+  font-family:var(--geo);
+  font-weight:900;
+  font-size:clamp(20px,6vw,26px);
+  color:var(--white);
+  line-height:1.2;
+  margin-bottom:12px;
+  letter-spacing:-0.5px;
+}
+.footer-msg span{color:var(--yellow)}
+.footer-sub{
+  font-family:var(--grotesk);
+  font-size:10px;
+  font-weight:700;
+  letter-spacing:0.16em;
+  text-transform:uppercase;
+  color:rgba(255,255,255,0.2);
+  margin-bottom:48px;
+}
+.restart-btn{
+  border:1.5px solid rgba(255,255,255,0.2);
+  background:transparent;
+  color:rgba(255,255,255,0.5);
+  font-family:var(--geo);
+  font-size:13px;
+  padding:12px 24px;
+  border-radius:10px;
+  cursor:pointer;
+  transition:border-color 0.2s,color 0.2s;
+}
+.restart-btn:hover{border-color:var(--yellow);color:var(--yellow)}
+
+/* ─── SLIDE-IN ANIMATION ─── */
+.slide-content{
+  opacity:0;
+  transform:translateY(24px);
+  transition:opacity 0.55s 0.1s ease,transform 0.55s 0.1s ease;
+}
+.slide.active .slide-content{
+  opacity:1;
+  transform:translateY(0);
+}
+
+.largef{
+    font-size: 30px;
+}
+.Mediumf{
+    font-size: 25px;
+}
+.Smallf{
+    font-size: 20px;
+}
+
+</style>
+</head>
+<body>
+
+<!-- DOT NAVIGATION -->
+<nav class="dots" id="dots" aria-label="Slide navigation"></nav>
+
+<!-- SLIDER WRAPPER -->
+<div class="slider" id="slider">
+
+  <!-- SLIDE 1: HERO -->
+  <section class="slide s-hero" data-index="0">
+    <div class="slide-content">
+      <div class="hero-badge">ინტელექტუალური თამაში</div>
+      <div class="hero-logo"><img src="public/logo.png" alt="რუბიკონი"></div>
+      <div class="hero-slogan">წილი ნაყარია<span class="rdot">.</span></div>
+      <p class="hero-sub"></p>
+      <p class="hero-sub"></p>
+      <br>
+      <button class="cta" onclick="goTo(1)">როგორ ვითამაშო? ↓</button>
+    </div>
+    <div class="swipe-hint">↑ გადაფურცლე ↓</div>
+  </section>
+
+  <!-- SLIDE 2: FORMAT -->
+  <section class="slide s-card" data-index="1">
+    <div class="slide-content">
+      <span class="c-num">01 / 05</span>
+      <div class="c-eyebrow">Game Format</div>
+      <div class="c-title">თამაშის ფორმატი</div>
+      <hr class="rule">
+      <!-- თამაში შეიცავს 5 თემატურ კატეგორიას, სანამ თითოეული გუნდი 1 კატეგორიას გააუქმებს. საბოლოო დაფა 3 კატეგორიისა და 15 კითხვისგან შედგება. -->
+      <p class="c-body Mediumf">თამაში შეიცავს 5 თემატურ კატეგორიას, სანამ თითოეული გუნდი 1 კატეგორიას გააუქმებს. საბოლოო დაფა 3 კატეგორიისა და 15 კითხვისგან შედგება.</p>
+      <br>
+      <p class="c-body Mediumf">კატეგორიაში კითხვები განსხვავდება ქულებით, შესაბამისი სირთულის მიხედვით.</p>
+      <br>
+      <div class="c-eyebrow">The Board</div>
+      <div class="c-title">თამაშის დაფა</div>
+      <hr class="rule">
+      <div class="board">
+  <div class="col">
+    <div class="bhead">სპორტი</div>
+    <div class="bcell">100</div>
+    <div class="bcell">200</div>
+    <div class="bcell">300</div>
+    <div class="bcell">400</div>
+    <div class="bcell max">500</div>
+  </div>
+
+  <div class="col tobeout">
+    <div class="bhead">მეცნიერება</div>
+    <div class="bcell">100</div>
+    <div class="bcell">200</div>
+    <div class="bcell">300</div>
+    <div class="bcell">400</div>
+    <div class="bcell max">500</div>
+  </div>
+
+  <div class="col">
+    <div class="bhead">ისტორია</div>
+    <div class="bcell">100</div>
+    <div class="bcell">200</div>
+    <div class="bcell">300</div>
+    <div class="bcell">400</div>
+    <div class="bcell max">500</div>
+  </div>
+
+  <div class="col">
+    <div class="bhead">მუსიკა</div>
+    <div class="bcell">100</div>
+    <div class="bcell">200</div>
+    <div class="bcell">300</div>
+    <div class="bcell">400</div>
+    <div class="bcell max">500</div>
+  </div>
+
+  <div class="col tobeout">
+    <div class="bhead">რენდომ</div>
+    <div class="bcell">100</div>
+    <div class="bcell">200</div>
+    <div class="bcell">300</div>
+    <div class="bcell">400</div>
+    <div class="bcell max">500</div>
+  </div>
+</div>
+    <div class="time-table">
+        <div class="trow"><span class="tp">100 – 200 ქულა</span><span class="ts">⏱ 30 წამი</span></div>
+        <div class="trow"><span class="tp">300 – 400 ქულა</span><span class="ts">⏱ 45 წამი</span></div>
+        <div class="trow xr"><span class="tp">500 ქულა</span><span class="ts">⏱ 60 წამი</span></div>
+      </div>
+  </section>
+
+  <!-- SLIDE 3: BOARD -->
+  <section class="slide s-card-c" data-index="2">
+    <div class="slide-content">
+      <span class="c-num">02 / 05</span>
+      <div class="c-eyebrow">Scoring</div>
+      <div class="c-title">ქულების სისტემა</div>
+      <hr class="rule">
+      <p class="c-body largef">გუნდის მიზანია, დააგროვოს ყველაზე მეტი ქულა და აჯობოს მოწინააღმდეგეს.</p>
+      <div class="score-grid">
+        <div class="sbox ok">
+          <span class="ssign">+</span>
+          <span class="slabel Smallf">სწორ პასუხზე<br>ქულები გემატება</span>
+        </div>
+        <div class="sbox ng">
+          <span class="ssign">−</span>
+          <span class="slabel Smallf">არასწორ პასუხზე<br>ქულები გაკლდებათ</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 5: STEAL -->
+  <section class="slide s-card-c s-dark" data-index="4">
+    <div class="slide-content">
+      <span class="c-num">04 / 05</span>
+      <div class="c-eyebrow">The Steal Rule</div>
+      <div class="c-title">მოპარვის&nbsp;წესი</div>
+      <hr class="rule">
+      <p class="steal-body Mediumf">კითხვებს გუნდები ირჩევენ რიგრიგობით.
+არასწორი პასუხის შემთხვევაში, მეტოქეს ეძლევა საშუალება <strong style="color:rgba(255,255,255,0.85)">მოიპაროს</strong> ქულა და მოიპოვოს უპირატოსობა.</p>
+      <div class="steal-warn">
+        <div class="steal-warn-ttl largef">⚠️ ყურადღება!</div>
+        <div class="steal-warn-b Mediumf">თუ მეტოქეც <strong style="color:rgba(255,255,255,0.85)">შეცდება</strong> — ისინიც ამ კითხვის ქულებს დაკარგავენ. <strong style="color:rgba(255,255,255,0.85)">რისკი ორმხრივია!</strong></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 6: PARTNERS -->
+  <section class="slide s-partners" data-index="5">
+    <div class="slide-content" style="display:flex;flex-direction:column;height:100%">
+      <span class="c-num" style="float:right">05 / 05</span>
+      <div class="c-eyebrow">Partners</div>
+      <div class="c-title">პარტნიორები</div>
+      <hr class="rule">
+      <p class="partners-intro">რუბიკონის პარტნიორები და სოც. მედიის ლინკები.</p>
+      <div class="partner-grid">
+        <a href="https://tbilisiopenair.ge/">
+        <div class="partner-card">
+          <div class="partner-logo"><img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Tbilisi-open-air.jpg" alt="Tbilis Open Air" style="height: 100%; width: 100%; object-fit: cover;"></div>
+          <div class="partner-info">
+            <div class="partner-name">Tbilisi Open Air</div>
+            <div class="partner-desc">Music Breaks Free</div>
+          </div>
+          <div class="partner-badge main">პარტნიორი</div>
+        </div>
+        </a>
+        <div class="partner-card">
+          <div class="partner-logo yellow-bg">EDU</div>
+          <div class="partner-info">
+            <div class="partner-name">პარტნიორი 2</div>
+            <div class="partner-desc">საგანმანათლებლო პარტნიორი</div>
+          </div>
+          <div class="partner-badge">პარტნიორი</div>
+        </div>
+        <div class="partner-card">
+          <div class="partner-logo red-bg">MED</div>
+          <div class="partner-info">
+            <div class="partner-name">პარტნიორი 3</div>
+            <div class="partner-desc">მედია პარტნიორი · პრომო</div>
+          </div>
+          <div class="partner-badge">მედია</div>
+        </div>
+        <div class="partner-card" style="border-style:dashed;opacity:0.5">
+          <div class="partner-logo" style="background:var(--gray);color:var(--gray-txt)">+</div>
+          <div class="partner-info">
+            <div class="partner-name">გახდი პარტნიორი</div>
+            <div class="partner-desc">დაგვიკავშირდი თანამშრომლობისთვის</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 7: FOOTER -->
+  <section class="slide s-footer" data-index="6">
+    <div class="slide-content">
+      <div class="footer-logo">რუბიკონი</div>
+      <div class="footer-msg">მოემზადეთ,<br><span>თამაში იწყება!</span></div>
+      <div class="footer-sub">Festival Intellectual Game · 2025</div>
+      <button class="restart-btn" onclick="goTo(0)">↑ თავიდან</button>
+    </div>
+  </section>
+
+</div><!-- /slider -->
+
+<script>
+    (function(){
+  const slider   = document.getElementById('slider');
+  const dotsNav  = document.getElementById('dots');
+  const slides   = Array.from(document.querySelectorAll('.slide'));
+  const N        = slides.length;
+  let   cur      = 0;
+  let   animating= false;
+  let   touchY   = null;
+  let   touchT   = null;
+
+  /* ── Build dots ── */
+  slides.forEach((_,i)=>{
+    const d = document.createElement('button');
+    d.className='dot';
+    d.setAttribute('aria-label','Slide '+(i+1));
+    d.onclick=()=>goTo(i);
+    dotsNav.appendChild(d);
+  });
+
+  function updateDots(){
+    dotsNav.querySelectorAll('.dot').forEach((d,i)=>{
+      d.classList.toggle('on', i===cur);
+    });
+  }
+
+  /* ── Board animation for slide index 1 ── */
+function resetBoard(){
+  document.querySelectorAll('.tobeout').forEach(el=>{
+    el.classList.remove('fading','gone');
+  });
+}
+
+function runBoardAnimation(){
+  resetBoard();
+  const tobeout = document.querySelectorAll('.tobeout');
+
+  setTimeout(()=>{
+    tobeout.forEach(el=>el.classList.add('fading'));
+
+    setTimeout(()=>{
+      tobeout.forEach(el=>{
+        el.classList.remove('fading');
+        el.classList.add('gone');
+      });
+    },800);
+
+  },3000);
+}
+
+  function goTo(idx){
+    if(idx===cur||animating) return;
+    animating=true;
+    slides[cur].classList.remove('active');
+    const prev=cur;
+    cur=Math.max(0,Math.min(N-1,idx));
+    slider.style.transform=`translateY(-${cur*100}dvh)`;
+    updateDots();
+    setTimeout(()=>{
+      slides[cur].classList.add('active');
+      animating=false;
+      /* trigger board anim every time slide 1 (Format) becomes active */
+      if(cur===1) runBoardAnimation();
+    },720);
+  }
+
+  window.goTo=goTo;
+
+  /* ── Init ── */
+  slides[0].classList.add('active');
+  updateDots();
+
+  /* ── Keyboard ── */
+  document.addEventListener('keydown',e=>{
+    if(e.key==='ArrowDown'||e.key==='PageDown') goTo(cur+1);
+    if(e.key==='ArrowUp'  ||e.key==='PageUp'  ) goTo(cur-1);
+  });
+
+  /* ── Mouse wheel ── */
+  let wheelLock=false;
+  document.addEventListener('wheel',e=>{
+    if(wheelLock||animating) return;
+    wheelLock=true;
+    if(e.deltaY>30) goTo(cur+1);
+    else if(e.deltaY<-30) goTo(cur-1);
+    setTimeout(()=>{wheelLock=false;},900);
+  },{passive:true});
+
+  /* ── Touch ── */
+  document.addEventListener('touchstart',e=>{
+    touchY=e.touches[0].clientY;
+    touchT=Date.now();
+  },{passive:true});
+
+  document.addEventListener('touchend',e=>{
+    if(touchY===null) return;
+    const dy  = touchY - e.changedTouches[0].clientY;
+    const dt  = Date.now()-touchT;
+    const vel = Math.abs(dy)/dt;
+    if(Math.abs(dy)>50 || vel>0.4){
+      if(dy>0) goTo(cur+1);
+      else     goTo(cur-1);
+    }
+    touchY=null;
+  },{passive:true});
+
+  function setVh(){
+    document.documentElement.style.setProperty('--vh',''+window.innerHeight*0.01+'px');
+  }
+  setVh();
+  window.addEventListener('resize',setVh);
+})();
+</script>
+</body>
+</html>
