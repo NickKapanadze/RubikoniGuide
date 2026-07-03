@@ -1,0 +1,100 @@
+.cell-group{
+  background-color: #E8E4DA;
+  color:#B07A00;
+  border-radius: 20px;
+  font-weight: 700;
+  font-size: 15px;
+    border: none;
+    
+}
+
+.cell-group:hover {
+    background-color: #e8e4dad4 !important;
+}
+
+.cell-group:focus {
+    background-color: #b6b1a4d4 !important;
+}
+
+.cell-inner{
+    color:#B07A00;
+}
+
+.cell-group[data-row="5"] {
+  background-color: #ED2F3B;
+}
+
+.cell-group[data-row="5"]:hover {
+  background-color: #ed2f3bcc !important;
+}
+
+.cell-group[data-row="5"] .cell-inner{
+    color: #E8E4DA;
+}
+
+.grid-cell[data-row="0"] {
+  background-color: #000;
+  border-radius: 15px;
+  font-weight: 700;
+}
+
+.grid-row-cats{
+    gap:10px;
+}
+
+.grid-cell[data-row="0"] .cell-inner{
+    color: #E8E4DA;
+    font-size: 10px;
+    transform: scale(0.6) !important;
+}
+
+.cat-cell{
+    color:#E8E4DA;
+}
+
+.grid-row-questions{
+    background-color: #fff;
+    border:none;
+    gap: 10px;
+}
+
+.grid-play{
+    gap:10px;
+}
+
+#gameplay{
+        background-color: #fff;
+}
+
+#teams div.points {
+  background-color: #E8E4DA;
+  color: #503800;
+  font-weight: bold;
+  font-size: 20px;
+}
+
+.menu-picker{
+   background-color: #13184400;
+      color: #9999991a;
+      border-right: 2px solid #9990;
+  border-top: 2px solid #9990;
+}
+
+#question-modal{
+  background-color: #E8E4DA;
+  color:#B07A00;
+}
+
+p{
+     color:#B07A00;
+     font-weight: 600;
+}
+
+#modal-header {
+  color: #E8E4DA;
+  background-color: #504b3b;
+}
+
+.cell-group[aria-label="Answered"] {
+  background-color: #1b1b1bcc !important;
+}
